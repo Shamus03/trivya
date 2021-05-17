@@ -48,7 +48,27 @@ export default defineComponent({
       }
     }
 
+    const shareThisGame = () => {
+      if (!navigator.share) {
+        alert('Your browser does not support sharing!')
+        return
+      }
+
+      navigator.share({
+        title: 'Trivya',
+        url: window.location.href,
+      })
+    }
+
     return () => <div>
+      <div class="share-this-game" onClick={shareThisGame}>
+        Share this game
+      </div>
+
+      <div class="question-progress">
+        Question: {questionNumber.value} / {props.questions.length}
+      </div>
+
       <div class="category">
         Category: {currentQuestion.value.category}
       </div>

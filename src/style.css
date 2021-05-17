@@ -7,6 +7,14 @@
   --border-radius: 5px;
 }
 
+.share-this-game {
+  float: right;
+}
+
+.difficulty {
+  text-transform: capitalize;
+}
+
 .question {
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
