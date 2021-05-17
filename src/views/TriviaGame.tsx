@@ -48,7 +48,7 @@ export default defineComponent({
       }
     }
 
-    const shareThisGame = () => {
+    const shareTheseQuestions = () => {
       if (!navigator.share) {
         alert('Your browser does not support sharing!')
         return
@@ -61,20 +61,20 @@ export default defineComponent({
     }
 
     return () => <div>
-      <div class="share-this-game" onClick={shareThisGame}>
-        Share this game
+      <div class="share-these-questions" onClick={shareTheseQuestions}>
+        Share these questions
       </div>
 
       <div class="question-progress">
         Question: {questionNumber.value + 1} / {props.questions.length}
       </div>
 
-      <div class="category">
-        Category: {currentQuestion.value.category}
-      </div>
-
       <div class="difficulty">
         Difficulty: {currentQuestion.value.difficulty}
+      </div>
+
+      <div class="category">
+        Category: {currentQuestion.value.category}
       </div>
 
       <div class="question">
