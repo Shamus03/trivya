@@ -1,0 +1,55 @@
+:root {
+  background: #2b2b2b;
+  color: var(--font-color);
+  font-size: large;
+  --font-color: #dedede;
+  --border-color: #777777;
+  --border-radius: 5px;
+}
+
+.question {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 10px;
+}
+
+.accuracy, .question, .answers, .next-question, .new-game {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.accuracy {
+  padding: 0 10px;
+}
+
+.answers ul {
+  list-style: none;
+  padding: 0;
+}
+
+.answers li {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  margin: 10px 0;
+  padding: 20px;
+}
+
+li.incorrect-answer {
+  border-color: #ad0000;
+  box-shadow: inset #e00000 0 0 20px 0px;
+}
+
+li.correct-answer {
+  border-color: #006600;
+  box-shadow: inset #009600 0 0 20px 0px;
+}
+
+.next-question button,
+.new-game button {
+  padding: 10px;
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: larger;
+  color: var(--font-color)
+}
