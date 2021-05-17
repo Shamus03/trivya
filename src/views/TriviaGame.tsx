@@ -126,9 +126,9 @@ export default defineComponent({
               Next Question
             </button>
           </div> :
-          <div class="new-game">
+          <div class="set-up-new-game">
             <button onClick={goToGameSetup}>
-              Start a new game
+              Set up a new game
             </button>
           </div>
         }

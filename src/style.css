@@ -21,7 +21,7 @@
   padding: 10px;
 }
 
-.accuracy, .question, .answers, .next-question, .new-game {
+.accuracy, .question, .answers, .next-question, .set-up-new-game, .start-new-game {
   margin-top: 30px;
   margin-bottom: 30px;
 }
@@ -52,12 +52,15 @@ li.correct-answer {
   box-shadow: inset #009600 0 0 20px 0px;
 }
 
-.next-question button,
-.new-game button {
+button {
   padding: 10px;
   background: none;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   font-size: larger;
   color: var(--font-color)
+}
+
+.set-up-new-game {
+  float: right;
 }
