@@ -1,6 +1,6 @@
 import { getGame, TriviaGame } from '@/api'
 import router from '@/router'
-import { ref, computed, defineComponent } from '@vue/runtime-core'
+import { ref, computed, defineComponent, watchEffect } from '@vue/runtime-core'
 
 export default defineComponent({
   props: {
@@ -27,19 +27,44 @@ export default defineComponent({
     }
     loadGame()
 
-    const questions = computed(() => game.value?.questions || [])
+    type LastGameState = {
+      gameId: string
+      questionNumber: number
+      correctAnswers: number
+      incorrectAnswers: number
+      selectedAnswer: string
+    }
 
-    const questionNumber = ref(0)
+    let lastGameState: LastGameState | null = JSON.parse(localStorage.getItem('last-game') ?? 'null')
+
+    if (lastGameState?.gameId !== props.gameId) {
+      lastGameState = null
+    }
+
+    const questionNumber = ref(lastGameState?.questionNumber ?? 0)
+
+    const correctAnswers = ref(lastGameState?.correctAnswers ?? 0)
+
+    const incorrectAnswers = ref(lastGameState?.incorrectAnswers ?? 0)
+
+    const selectedAnswer = ref(lastGameState?.selectedAnswer ?? '')
+
+    watchEffect(() => {
+      const state: LastGameState = {
+        gameId: props.gameId,
+        questionNumber: questionNumber.value,
+        correctAnswers: correctAnswers.value,
+        incorrectAnswers: incorrectAnswers.value,
+        selectedAnswer: selectedAnswer.value,
+      }
+      localStorage.setItem('last-game', JSON.stringify(state))
+    })
+
+    const questions = computed(() => game.value?.questions || [])
 
     const currentQuestion = computed(() => questions.value[questionNumber.value])
 
     const hasNextQuestion = computed(() => questionNumber.value < questions.value.length - 1)
-
-    const selectedAnswer = ref('')
-
-    const correctAnswers = ref(0)
-
-    const incorrectAnswers = ref(0)
 
     const accuracy = computed(() => correctAnswers.value / (correctAnswers.value + incorrectAnswers.value))
 
