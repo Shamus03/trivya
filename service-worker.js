@@ -14,16 +14,14 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/trivya/precache-manifest.e4df9f4e66eb029b82626de87bf91a98.js"
+  "/trivya/precache-manifest.d25ce3c462e15553fcf0c3590a8c9a8d.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "trivya"});
 
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-});
+workbox.core.skipWaiting();
+
+workbox.core.clientsClaim();
 
 /**
  * The workboxSW.precacheAndRoute() method efficiently caches and responds to
