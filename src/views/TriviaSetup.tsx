@@ -1,5 +1,5 @@
 import router from '@/router'
-import { getTriviaQuestions } from '@/api'
+import { createGame, getTriviaQuestions } from '@/api'
 import { defineComponent, ref } from '@vue/runtime-core'
 
 export default defineComponent({
@@ -14,10 +14,11 @@ export default defineComponent({
 
     const startNewGame = async () => {
       const questions = await getTriviaQuestions({ amount: 10, difficulty: selectedDifficulty.value })
+      const gameId = await createGame({ questions })
       router.push({
         name: 'TriviaGame',
         params: {
-          questions: btoa(escape(JSON.stringify(questions))),
+          gameId: gameId,
         },
       })
     }

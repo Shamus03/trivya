@@ -9,10 +9,8 @@ const routes: Array<RouteRecordRaw> = [
     component: TriviaSetup,
   },
   {
-    path: '/game/:questions',
-    props: route => ({
-      questions: JSON.parse(unescape(atob(route.params.questions as string))),
-    }),
+    path: '/game/:gameId',
+    props: true,
     name: 'TriviaGame',
     component: TriviaGame,
   },

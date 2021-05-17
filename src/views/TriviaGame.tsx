@@ -1,21 +1,39 @@
-import { TriviaQuestion } from '@/api'
+import { getGame, TriviaGame } from '@/api'
 import router from '@/router'
 import { ref, computed, defineComponent } from '@vue/runtime-core'
 
 export default defineComponent({
   props: {
-    questions: {
-      type: Array as (() => TriviaQuestion[]),
+    gameId: {
+      type: String,
       required: true,
     },
   },
   setup(props) {
+    const game = ref(null as TriviaGame | null)
+
+    const loading = ref(false)
+
+    const loadGame = async () => {
+      loading.value = true
+      try {
+        game.value = await getGame(props.gameId)
+      } catch (e) {
+        alert('An error occurred - returning to main page')
+        goToGameSetup()
+      } finally {
+        loading.value = false
+      }
+    }
+    loadGame()
+
+    const questions = computed(() => game.value?.questions || [])
 
     const questionNumber = ref(0)
 
-    const currentQuestion = computed(() => props.questions[questionNumber.value])
+    const currentQuestion = computed(() => questions.value[questionNumber.value])
 
-    const hasNextQuestion = computed(() => questionNumber.value < props.questions.length - 1)
+    const hasNextQuestion = computed(() => questionNumber.value < questions.value.length - 1)
 
     const selectedAnswer = ref('')
 
@@ -60,13 +78,13 @@ export default defineComponent({
       })
     }
 
-    return () => <div>
+    return () => loading.value ? <div>Loading...</div> : <div>
       <div class="share-these-questions" onClick={shareTheseQuestions}>
         Share these questions
       </div>
 
       <div class="question-progress">
-        Question: {questionNumber.value + 1} / {props.questions.length}
+        Question: {questionNumber.value + 1} / {questions.value.length}
       </div>
 
       <div class="difficulty">
