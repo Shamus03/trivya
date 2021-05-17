@@ -38,8 +38,28 @@ export async function getGame(gameId: string): Promise<TriviaGame> {
   return game
 }
 
+const openTdb = Axios.create({
+  baseURL: 'https://opentdb.com',
+})
+let openTdbSessionToken = ''
+
+enum OpenTdbResponseCode {
+  Success = 0,
+  NoResults = 1,
+  InvalidParameter = 2,
+  TokenNotFound = 3,
+  TokenEmpty = 4,
+}
+
 export async function getTriviaQuestions({ difficulty, amount }: { difficulty?: string, amount?: number }): Promise<TriviaQuestion[]> {
-  const resp = await Axios.get<{
+  if (!openTdbSessionToken) {
+    const resp = await openTdb.get<{
+      token: string
+    }>('/api_token.php?command=request')
+    openTdbSessionToken = resp.data.token
+  }
+  const resp = await openTdb.get<{
+    response_code: OpenTdbResponseCode,
     results: {
       question: string
       category: string
@@ -48,13 +68,23 @@ export async function getTriviaQuestions({ difficulty, amount }: { difficulty?: 
       correct_answer: string
       incorrect_answers: string[]
     }[],
-  }>('https://opentdb.com/api.php', {
+  }>('/api.php', {
     params: {
       encode: 'url3986',
       amount,
       difficulty,
+      token: openTdbSessionToken,
     },
   })
+
+  if ([OpenTdbResponseCode.TokenEmpty, OpenTdbResponseCode.TokenNotFound].includes(resp.data.response_code)) {
+    openTdbSessionToken = ''
+    return await getTriviaQuestions({ difficulty, amount })
+  }
+
+  if (resp.data.response_code != OpenTdbResponseCode.Success) {
+    throw new Error('Failed to get questions')
+  }
 
   return resp.data.results.map(q => {
     const correctAnswer = decodeURIComponent(q.correct_answer)
