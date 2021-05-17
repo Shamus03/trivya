@@ -66,7 +66,7 @@ export default defineComponent({
       </div>
 
       <div class="question-progress">
-        Question: {questionNumber.value} / {props.questions.length}
+        Question: {questionNumber.value + 1} / {props.questions.length}
       </div>
 
       <div class="category">
