@@ -14,12 +14,16 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/trivya/precache-manifest.b757d8a4b1871394c24940895cf83370.js"
+  "/trivya/precache-manifest.6acf5870b05a67d613f65e93836d9b3c.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "trivya"});
 
-workbox.core.skipWaiting();
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
 
 workbox.core.clientsClaim();
 

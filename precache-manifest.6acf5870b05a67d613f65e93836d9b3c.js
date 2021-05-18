@@ -1,15 +1,15 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "656c3c3e0107fb9d4844",
+    "revision": "ced82fca262d34d12703",
     "url": "/trivya/css/app.dcb89720.css"
   },
   {
-    "revision": "0b531d8a9c62ae8b97f04be395e7719c",
+    "revision": "9750d0853606c53b66d52cf90c58f5db",
     "url": "/trivya/index.html"
   },
   {
-    "revision": "656c3c3e0107fb9d4844",
-    "url": "/trivya/js/app.20f16d06.js"
+    "revision": "ced82fca262d34d12703",
+    "url": "/trivya/js/app.c6c8c663.js"
   },
   {
     "revision": "f00ec472c4a0dcb18be0",
