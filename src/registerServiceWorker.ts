@@ -9,6 +9,12 @@ if (process.env.NODE_ENV === 'production') {
         'App is being served from cache by a service worker.\n' +
         'For more details, visit https://goo.gl/AFskqB',
       )
+      let reloading = true
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (reloading) return
+        reloading = true
+        window.location.reload()
+      })
     },
     registered() {
       console.log('Service worker has been registered.')
@@ -19,8 +25,11 @@ if (process.env.NODE_ENV === 'production') {
     updatefound() {
       console.log('New content is downloading.')
     },
-    updated() {
+    updated(reg) {
       console.log('New content is available; please refresh.')
+      if (confirm('Updates available - refresh now?')) {
+        reg.waiting?.postMessage({ type: 'SKIP_WAITING' })
+      }
     },
     offline() {
       console.log('No internet connection found. App is running in offline mode.')
