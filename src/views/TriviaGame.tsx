@@ -81,6 +81,9 @@ export default defineComponent({
       router.push({ name: 'TriviaSetup' })
     }
 
+    const delayAfterChoosingAnswer = ref(true)
+    let lastDelay = 0
+
     const chooseAnswer = (answer: string) => {
       if (selectedAnswer.value) {
         return
@@ -91,6 +94,11 @@ export default defineComponent({
       } else {
         incorrectAnswers.value++
       }
+      delayAfterChoosingAnswer.value = false
+      clearTimeout(lastDelay)
+      lastDelay = setTimeout(() => {
+        delayAfterChoosingAnswer.value = true
+      }, 1000)
     }
 
     const shareTheseQuestions = () => {
@@ -104,6 +112,10 @@ export default defineComponent({
         url: window.location.href,
       })
     }
+
+    const showNewGameButton = computed(() => {
+      return !hasNextQuestion.value && delayAfterChoosingAnswer.value
+    })
 
     watchEffect(() => {
       if (correctAnswers.value === game.value?.questions.length) {
@@ -159,18 +171,22 @@ export default defineComponent({
             {!isNaN(accuracy.value) && <>Accuracy: {Math.round(accuracy.value * 100)}%</>}
           </div>
 
-          {hasNextQuestion.value ?
+          {hasNextQuestion.value &&
             <div class="next-question">
               <button onClick={goToNextQuestion}>
               Next Question
               </button>
-            </div> :
-            <div class="set-up-new-game">
-              <button onClick={goToGameSetup}>
-              Set up a new game
-              </button>
             </div>
           }
+
+          <Transition name="slide-fade">
+            {showNewGameButton.value &&
+              <div class="set-up-new-game">
+                <button onClick={goToGameSetup}>
+                Set up a new game
+                </button>
+              </div>}
+          </Transition>
         </div>}
       </Transition>
     </div>
