@@ -1,6 +1,7 @@
 import { getGame, TriviaGame } from '@/api'
 import router from '@/router'
 import { ref, computed, defineComponent, watchEffect } from '@vue/runtime-core'
+import { Transition } from 'vue'
 
 export default defineComponent({
   props: {
@@ -120,44 +121,51 @@ export default defineComponent({
         Category: {currentQuestion.value.category}
       </div>
 
-      <div class="question">
-        {currentQuestion.value.question}
-      </div>
-
-      <div class="answers">
-        <ul>
-          {currentQuestion.value.allAnswers.map(a =>
-            <li
-              onClick={() => chooseAnswer(a)}
-              class={{
-                'correct-answer': selectedAnswer.value && a === currentQuestion.value.correctAnswer,
-                'incorrect-answer': a === selectedAnswer.value && a !== currentQuestion.value.correctAnswer,
-              }}
-            >
-              {a}
-            </li>,
-          )}
-        </ul>
-      </div>
-
-      {!!selectedAnswer.value && <div>
-        <div class="accuracy">
-          {!isNaN(accuracy.value) && <>Accuracy: {Math.round(accuracy.value * 100)}%</>}
-        </div>
-
-        {hasNextQuestion.value ?
-          <div class="next-question">
-            <button onClick={goToNextQuestion}>
-              Next Question
-            </button>
-          </div> :
-          <div class="set-up-new-game">
-            <button onClick={goToGameSetup}>
-              Set up a new game
-            </button>
+      <Transition name="fade" mode="out-in">
+        <div key={questionNumber.value}>
+          <div class="question">
+            {currentQuestion.value.question}
           </div>
-        }
-      </div>}
+
+          <div class="answers">
+            <ul>
+              {currentQuestion.value.allAnswers.map(a =>
+                <li
+                  key={a}
+                  onClick={() => chooseAnswer(a)}
+                  class={{
+                    'correct-answer': selectedAnswer.value && a === currentQuestion.value.correctAnswer,
+                    'incorrect-answer': a === selectedAnswer.value && a !== currentQuestion.value.correctAnswer,
+                  }}
+                >
+                  {a}
+                </li>,
+              )}
+            </ul>
+          </div>
+        </div>
+      </Transition>
+
+      <Transition name="slide-fade">
+        {!!selectedAnswer.value && <div>
+          <div class="accuracy">
+            {!isNaN(accuracy.value) && <>Accuracy: {Math.round(accuracy.value * 100)}%</>}
+          </div>
+
+          {hasNextQuestion.value ?
+            <div class="next-question">
+              <button onClick={goToNextQuestion}>
+              Next Question
+              </button>
+            </div> :
+            <div class="set-up-new-game">
+              <button onClick={goToGameSetup}>
+              Set up a new game
+              </button>
+            </div>
+          }
+        </div>}
+      </Transition>
     </div>
   },
 })

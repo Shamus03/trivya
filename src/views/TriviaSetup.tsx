@@ -12,15 +12,22 @@ export default defineComponent({
     ]
     const selectedDifficulty = ref(difficultyOptions[0].value)
 
+    const loading = ref(false)
+
     const startNewGame = async () => {
-      const questions = await getTriviaQuestions({ amount: 10, difficulty: selectedDifficulty.value })
-      const gameId = await createGame({ questions })
-      router.push({
-        name: 'TriviaGame',
-        params: {
-          gameId: gameId,
-        },
-      })
+      loading.value = true
+      try {
+        const questions = await getTriviaQuestions({ amount: 10, difficulty: selectedDifficulty.value })
+        const gameId = await createGame({ questions })
+        router.push({
+          name: 'TriviaGame',
+          params: {
+            gameId: gameId,
+          },
+        })
+      } finally {
+        loading.value = false
+      }
     }
 
     return () => <div>
@@ -30,7 +37,9 @@ export default defineComponent({
         <div class="label">Select a difficulty:</div>
         {difficultyOptions.map(d => <div><label key={d.value}><input v-model={selectedDifficulty.value} type="radio" value={d.value}></input> {d.text}</label></div>)}
       </div>
-      <button class="start-new-game" onClick={startNewGame}>Start!</button>
+      <button class="start-new-game" onClick={startNewGame} disabled={loading.value}>
+        {!loading.value ? 'Start!' : 'Loading...'}
+      </button>
     </div>
   },
 })

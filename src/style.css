@@ -1,10 +1,15 @@
 :root {
-  background: #2b2b2b;
-  color: var(--font-color);
-  font-size: large;
+  --background-color: #2b2b2b;
   --font-color: #dedede;
   --border-color: #777777;
   --border-radius: 5px;
+}
+
+html, body {
+  background: var(--background-color);
+  color: var(--font-color);
+  font-size: large;
+  overflow: hidden;
 }
 
 .share-these-questions {
@@ -40,6 +45,7 @@
   border-radius: var(--border-radius);
   margin: 10px 0;
   padding: 20px;
+  transition: all 0.3s ease;
 }
 
 li.incorrect-answer {
@@ -61,6 +67,31 @@ button {
   color: var(--font-color)
 }
 
+button:disabled {
+  color: gray;
+}
+
 .set-up-new-game {
   float: right;
+}
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateY(20px);
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
