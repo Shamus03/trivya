@@ -2,6 +2,7 @@ import { getGame, TriviaGame } from '@/api'
 import router from '@/router'
 import { ref, computed, defineComponent, watchEffect } from '@vue/runtime-core'
 import { Transition } from 'vue'
+import canvasConfetti from 'canvas-confetti'
 
 export default defineComponent({
   props: {
@@ -103,6 +104,12 @@ export default defineComponent({
         url: window.location.href,
       })
     }
+
+    watchEffect(() => {
+      if (correctAnswers.value === game.value?.questions.length) {
+        canvasConfetti()
+      }
+    })
 
     return () => loading.value ? <div>Loading...</div> : <div>
       <div class="share-these-questions" onClick={shareTheseQuestions}>
