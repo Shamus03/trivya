@@ -16,19 +16,6 @@ export default defineComponent({
 
     const loading = ref(false)
 
-    const loadGame = async () => {
-      loading.value = true
-      try {
-        game.value = await getGame(props.gameId)
-      } catch (e) {
-        alert('An error occurred - returning to main page')
-        goToGameSetup()
-      } finally {
-        loading.value = false
-      }
-    }
-    loadGame()
-
     type LastGameState = {
       gameId: string
       questionNumber: number
@@ -37,23 +24,45 @@ export default defineComponent({
       selectedAnswer: string
     }
 
-    let lastGameState: LastGameState | null = JSON.parse(localStorage.getItem('last-game') ?? 'null')
+    const questionNumber = ref(0)
+    const correctAnswers = ref(0)
+    const incorrectAnswers = ref(0)
+    const selectedAnswer = ref('')
 
-    if (lastGameState?.gameId !== props.gameId) {
-      lastGameState = null
-    }
+    watchEffect(async () => {
+      loading.value = true
+      try {
+        game.value = await getGame(props.gameId)
+        
+        let lastGameState: LastGameState | null = JSON.parse(localStorage.getItem('last-game') ?? 'null')
 
-    const questionNumber = ref(lastGameState?.questionNumber ?? 0)
-
-    const correctAnswers = ref(lastGameState?.correctAnswers ?? 0)
-
-    const incorrectAnswers = ref(lastGameState?.incorrectAnswers ?? 0)
-
-    const selectedAnswer = ref(lastGameState?.selectedAnswer ?? '')
+        if (lastGameState?.gameId !== game.value.id) {
+          lastGameState = {
+            gameId: game.value.id,
+            questionNumber: 0,
+            correctAnswers: 0,
+            incorrectAnswers: 0,
+            selectedAnswer: '',
+          }
+        }
+        
+        questionNumber.value = lastGameState.questionNumber
+        correctAnswers.value = lastGameState.correctAnswers
+        incorrectAnswers.value = lastGameState.incorrectAnswers
+        selectedAnswer.value = lastGameState.selectedAnswer
+      } catch (e) {
+        alert('An error occurred - returning to main page')
+        goToGameSetup()
+      } finally {
+        loading.value = false
+      }
+    })
 
     watchEffect(() => {
+      if (!game.value) return
+      
       const state: LastGameState = {
-        gameId: props.gameId,
+        gameId: game.value.id,
         questionNumber: questionNumber.value,
         correctAnswers: correctAnswers.value,
         incorrectAnswers: incorrectAnswers.value,

@@ -16,6 +16,7 @@ const db = firebase.firestore(firebaseApp)
 const games = db.collection('games')
 
 export interface TriviaGame {
+  id: string
   questions: TriviaQuestion[]
 }
 
@@ -27,7 +28,7 @@ export interface TriviaQuestion {
   allAnswers: string[]
 }
 
-export async function createGame(game: TriviaGame): Promise<string> {
+export async function createGame(game: Omit<TriviaGame, 'id'>): Promise<string> {
   const doc = await games.add(game)
   return doc.id
 }
@@ -35,6 +36,7 @@ export async function createGame(game: TriviaGame): Promise<string> {
 export async function getGame(gameId: string): Promise<TriviaGame> {
   const doc = await games.doc(gameId).get()
   const game = doc.data() as TriviaGame
+  game.id = doc.id
   return game
 }
 
