@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/trivya/precache-manifest.93b66d4e696984a600e83282b76a5942.js"
+  "/trivya/precache-manifest.4d2d435c15308b3a9926812dde4015b2.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "trivya"});
