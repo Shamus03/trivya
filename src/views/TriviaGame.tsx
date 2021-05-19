@@ -88,13 +88,13 @@ export default defineComponent({
       if (selectedAnswer.value) {
         return
       }
+      delayAfterChoosingAnswer.value = false
       selectedAnswer.value = answer
       if (answer === currentQuestion.value.correctAnswer) {
         correctAnswers.value++
       } else {
         incorrectAnswers.value++
       }
-      delayAfterChoosingAnswer.value = false
       clearTimeout(lastDelay)
       lastDelay = setTimeout(() => {
         delayAfterChoosingAnswer.value = true
