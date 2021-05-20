@@ -12,6 +12,10 @@ html, body {
   overflow: hidden;
 }
 
+.room-code {
+  margin: 20px 0;
+}
+
 .share-these-questions {
   float: right;
 }
@@ -56,6 +60,19 @@ li.incorrect-answer {
 li.correct-answer {
   border-color: #006600;
   box-shadow: inset #009600 0 0 20px 0px;
+}
+
+hr {
+  border-color: var(--border-color);
+}
+
+input {
+  padding: 5px;
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: large;
+  color: var(--font-color)
 }
 
 button {

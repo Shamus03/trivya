@@ -17,6 +17,8 @@ const games = db.collection('games')
 
 export interface TriviaGame {
   id: string
+  roomCode?: string
+  createdAt: firebase.firestore.Timestamp
   questions: TriviaQuestion[]
 }
 
@@ -28,13 +30,32 @@ export interface TriviaQuestion {
   allAnswers: string[]
 }
 
-export async function createGame(game: Omit<TriviaGame, 'id'>): Promise<string> {
-  const doc = await games.add(game)
+export async function createGame(game: Omit<TriviaGame, 'id' | 'createdAt'>): Promise<string> {
+  const doc = await games.add({
+    ...game,
+    createdAt: firebase.firestore.Timestamp.now(),
+  })
   return doc.id
 }
 
 export async function getGame(gameId: string): Promise<TriviaGame> {
   const doc = await games.doc(gameId).get()
+  return docToTriviaGame(doc)
+}
+
+export async function getMostRecentGameIdByRoomCode(roomCode: string): Promise<string | null> {
+  const result = await games
+    .where('roomCode', '==', roomCode)
+    .orderBy('createdAt', 'desc')
+    .limit(1)
+    .get()
+  if (result.empty) {
+    return null
+  }
+  return result.docs[0].id
+}
+
+const docToTriviaGame = (doc: firebase.firestore.DocumentData): TriviaGame => {
   const game = doc.data() as TriviaGame
   game.id = doc.id
   return game
