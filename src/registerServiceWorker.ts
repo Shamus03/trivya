@@ -9,7 +9,7 @@ if (process.env.NODE_ENV === 'production') {
         'App is being served from cache by a service worker.\n' +
         'For more details, visit https://goo.gl/AFskqB',
       )
-      let reloading = true
+      let reloading = false
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         if (reloading) return
         reloading = true
