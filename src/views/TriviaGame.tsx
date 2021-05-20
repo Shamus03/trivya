@@ -1,6 +1,6 @@
 import { getGame, TriviaGame } from '@/api'
 import router from '@/router'
-import { ref, computed, defineComponent, watchEffect } from '@vue/runtime-core'
+import { ref, computed, defineComponent, watchEffect, onBeforeMount, onBeforeUnmount } from '@vue/runtime-core'
 import { Transition } from 'vue'
 import canvasConfetti from 'canvas-confetti'
 
@@ -28,6 +28,38 @@ export default defineComponent({
     const correctAnswers = ref(0)
     const incorrectAnswers = ref(0)
     const selectedAnswer = ref('')
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      switch (e.code) {
+      case 'Digit1':
+        selectedAnswer.value = currentQuestion.value.allAnswers[0]
+        break
+      case 'Digit2':
+        selectedAnswer.value = currentQuestion.value.allAnswers[1]
+        break
+      case 'Digit3':
+        selectedAnswer.value = currentQuestion.value.allAnswers[2]
+        break
+      case 'Digit4':
+        selectedAnswer.value = currentQuestion.value.allAnswers[3]
+        break
+      case 'Enter':
+        if (selectedAnswer.value) {
+          if (hasNextQuestion.value) {
+            goToNextQuestion()
+          } else {
+            goToGameSetup()
+          }
+        }
+        break
+      }
+    }
+    onBeforeMount(() => {
+      window.addEventListener('keydown', handleKeyDown)
+    })
+    onBeforeUnmount(() => {
+      window.removeEventListener('keydown', handleKeyDown)
+    })
 
     watchEffect(async () => {
       loading.value = true
