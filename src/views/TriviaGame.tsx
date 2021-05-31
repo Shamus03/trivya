@@ -16,17 +16,20 @@ export default defineComponent({
 
     const loading = ref(false)
 
+    const stateVersion = 1 as const
+
+    const pointsForCorrectAnswer = 100
+
     type LastGameState = {
+      version: typeof stateVersion,
       gameId: string
+      score: number
       questionNumber: number
-      correctAnswers: number
-      incorrectAnswers: number
       selectedAnswer: string
     }
 
     const questionNumber = ref(0)
-    const correctAnswers = ref(0)
-    const incorrectAnswers = ref(0)
+    const score = ref(0)
     const selectedAnswer = ref('')
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -70,17 +73,30 @@ export default defineComponent({
 
         if (lastGameState?.gameId !== game.value.id) {
           lastGameState = {
+            version: stateVersion,
             gameId: game.value.id,
+            score: 0,
             questionNumber: 0,
-            correctAnswers: 0,
-            incorrectAnswers: 0,
             selectedAnswer: '',
+          }
+        }
+
+        // V0 to V1 conversion
+        if (lastGameState.version === undefined) {
+          /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+          const oldState = lastGameState as any
+
+          lastGameState = {
+            version: stateVersion,
+            gameId: game.value.id,
+            score: oldState.correctAnswers * pointsForCorrectAnswer,
+            questionNumber: lastGameState.questionNumber,
+            selectedAnswer: lastGameState.selectedAnswer,
           }
         }
         
         questionNumber.value = lastGameState.questionNumber
-        correctAnswers.value = lastGameState.correctAnswers
-        incorrectAnswers.value = lastGameState.incorrectAnswers
+        score.value = lastGameState.score
         selectedAnswer.value = lastGameState.selectedAnswer
       } catch (e) {
         alert('An error occurred - returning to main page')
@@ -94,10 +110,10 @@ export default defineComponent({
       if (!game.value) return
       
       const state: LastGameState = {
+        version: stateVersion,
         gameId: game.value.id,
         questionNumber: questionNumber.value,
-        correctAnswers: correctAnswers.value,
-        incorrectAnswers: incorrectAnswers.value,
+        score: score.value,
         selectedAnswer: selectedAnswer.value,
       }
       localStorage.setItem('last-game', JSON.stringify(state))
@@ -108,8 +124,6 @@ export default defineComponent({
     const currentQuestion = computed(() => questions.value[questionNumber.value])
 
     const hasNextQuestion = computed(() => questionNumber.value < questions.value.length - 1)
-
-    const accuracy = computed(() => correctAnswers.value / (correctAnswers.value + incorrectAnswers.value))
 
     const goToNextQuestion = () => {
       if (hasNextQuestion.value) {
@@ -132,10 +146,8 @@ export default defineComponent({
       delayAfterChoosingAnswer.value = false
       selectedAnswer.value = answer
       if (answer === currentQuestion.value.correctAnswer) {
-        correctAnswers.value++
-      } else {
-        incorrectAnswers.value++
-      }
+        score.value += pointsForCorrectAnswer
+      } 
       clearTimeout(lastDelay)
       lastDelay = setTimeout(() => {
         delayAfterChoosingAnswer.value = true
@@ -159,7 +171,7 @@ export default defineComponent({
     })
 
     watchEffect(() => {
-      if (correctAnswers.value === game.value?.questions.length) {
+      if (game.value && (score.value === game.value.questions.length * pointsForCorrectAnswer)) {
         canvasConfetti()
       }
     })
@@ -194,6 +206,7 @@ export default defineComponent({
                   key={a}
                   onClick={() => chooseAnswer(a)}
                   class={{
+                    disabled: selectedAnswer.value,
                     'correct-answer': selectedAnswer.value && a === currentQuestion.value.correctAnswer,
                     'incorrect-answer': a === selectedAnswer.value && a !== currentQuestion.value.correctAnswer,
                   }}
@@ -208,8 +221,8 @@ export default defineComponent({
 
       <Transition name="slide-fade">
         {!!selectedAnswer.value && <div>
-          <div class="accuracy">
-            {!isNaN(accuracy.value) && <>Accuracy: {Math.round(accuracy.value * 100)}%</>}
+          <div class="score">
+            Score: {score.value.toLocaleString()}
           </div>
 
           {hasNextQuestion.value &&

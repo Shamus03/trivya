@@ -30,12 +30,12 @@ html, body {
   padding: 10px;
 }
 
-.accuracy, .question, .answers, .next-question, .set-up-new-game, .start-new-game {
+.score, .question, .answers, .next-question, .set-up-new-game, .start-new-game {
   margin-top: 30px;
   margin-bottom: 30px;
 }
 
-.accuracy {
+.score {
   padding: 0 10px;
 }
 
@@ -50,6 +50,10 @@ html, body {
   margin: 10px 0;
   padding: 20px;
   transition: all 0.3s ease;
+}
+
+.answers li:not(.disabled) {
+  cursor: pointer;
 }
 
 li.incorrect-answer {
@@ -81,7 +85,8 @@ button {
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   font-size: larger;
-  color: var(--font-color)
+  color: var(--font-color);
+  cursor: pointer;
 }
 
 button:disabled {
