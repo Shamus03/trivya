@@ -74,7 +74,7 @@ enum OpenTdbResponseCode {
   TokenEmpty = 4,
 }
 
-export async function getTriviaQuestions({ difficulty, amount }: { difficulty?: string, amount?: number }): Promise<TriviaQuestion[]> {
+export async function getTriviaQuestions({ difficulty, amount, categoryId }: { difficulty?: string, amount?: number, categoryId?: number }): Promise<TriviaQuestion[]> {
   if (!openTdbSessionToken) {
     const resp = await openTdb.get<{
       token: string
@@ -96,6 +96,7 @@ export async function getTriviaQuestions({ difficulty, amount }: { difficulty?: 
       encode: 'url3986',
       amount,
       difficulty,
+      category: categoryId,
       token: openTdbSessionToken,
     },
   })
@@ -120,4 +121,16 @@ export async function getTriviaQuestions({ difficulty, amount }: { difficulty?: 
       allAnswers: q.type === 'boolean' ? allAnswers.sort().reverse() : allAnswers.sort(),
     }
   })
+}
+
+export interface OpenTdbCategory {
+  id: number
+  name: string
+}
+
+export const getCategoryOptions = async (): Promise<OpenTdbCategory[]> => {
+  const resp = await openTdb.get<{
+    trivia_categories: OpenTdbCategory[]
+  }>('/api_category.php')
+  return resp.data.trivia_categories
 }

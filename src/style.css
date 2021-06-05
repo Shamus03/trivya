@@ -12,6 +12,18 @@ html, body {
   overflow: hidden;
 }
 
+.category-selector {
+  margin-top: 15px;
+}
+
+.category-selector select {
+  max-width: 100%;
+}
+
+.room-code-separator {
+  margin-top: 100px;
+}
+
 .room-code {
   margin: 20px 0;
 }
@@ -70,22 +82,29 @@ hr {
   border-color: var(--border-color);
 }
 
-input {
-  padding: 5px;
+input, select, button {
   background: none;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
+  color: var(--font-color);
+}
+
+input, select {
+  padding: 5px;
   font-size: large;
-  color: var(--font-color)
+}
+
+select {
+  text-overflow: ellipsis;
+}
+
+option {
+  background: var(--background-color);
 }
 
 button {
   padding: 10px;
-  background: none;
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
   font-size: larger;
-  color: var(--font-color);
   cursor: pointer;
 }
 

@@ -1,6 +1,6 @@
 import router from '@/router'
-import { createGame, getTriviaQuestions, getMostRecentGameIdByRoomCode } from '@/api'
-import { defineComponent, ref, watchEffect } from '@vue/runtime-core'
+import { createGame, getTriviaQuestions, getMostRecentGameIdByRoomCode, getCategoryOptions, OpenTdbCategory } from '@/api'
+import { defineComponent, onMounted, reactive, ref, watchEffect } from '@vue/runtime-core'
 
 export default defineComponent({
   setup() {
@@ -11,6 +11,15 @@ export default defineComponent({
       { text: 'Hard', value: 'hard' },
     ]
     const selectedDifficulty = ref(difficultyOptions[0].value)
+
+    const categoryOptions = reactive<OpenTdbCategory[]>([
+      { id: 0, name: 'All Categories' },
+    ])
+    onMounted(async () => {
+      const c = await getCategoryOptions()
+      categoryOptions.push(...c.sort((a, b) => a.name.localeCompare(b.name)))
+    })
+    const selectedCategoryId = ref(0)
 
     const creatingGame = ref(false)
     const findingGame = ref(false)
@@ -23,7 +32,11 @@ export default defineComponent({
     const startNewGame = async () => {
       creatingGame.value = true
       try {
-        const questions = await getTriviaQuestions({ amount: 10, difficulty: selectedDifficulty.value })
+        const questions = await getTriviaQuestions({
+          amount: 10,
+          difficulty: selectedDifficulty.value,
+          categoryId: selectedCategoryId.value,
+        })
         const gameId = await createGame({ questions, roomCode: roomCode.value })
         goToGame(gameId)
       } finally {
@@ -56,14 +69,37 @@ export default defineComponent({
       <h4>Set up a new game</h4>
 
       <div class="difficulty-selector">
-        <div class="label">Select a difficulty:</div>
-        {difficultyOptions.map(d => <div><label key={d.value}><input v-model={selectedDifficulty.value} type="radio" value={d.value}></input> {d.text}</label></div>)}
+        <div>Select a difficulty:</div>
+        {difficultyOptions.map(d =>
+          <div>
+            <label key={d.value}>
+              <input
+                v-model={selectedDifficulty.value}
+                type="radio"
+                value={d.value}
+              />
+              {d.text}
+            </label>
+          </div>,
+        )}
       </div>
+
+      <div class="category-selector">
+        <label>
+          <div>Select a category:</div>
+          <select v-model={selectedCategoryId.value}>
+            {categoryOptions.map(c =>
+              <option key={c.id} value={c.id}>{c.name}</option>,
+            )}
+          </select>
+        </label>
+      </div>
+      
       <button class="start-new-game" onClick={startNewGame} disabled={creatingGame.value}>
         {!creatingGame.value ? 'Start!' : 'Loading...'}
       </button>
 
-      <hr />
+      <hr class="room-code-separator" />
       
       <div class="room-code">
         <label>
