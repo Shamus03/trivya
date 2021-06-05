@@ -1,19 +1,19 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "c10a8bffc4bcd573c141",
-    "url": "/trivya/css/app.76811319.css"
+    "revision": "aa0d4fc7480524c7bc24",
+    "url": "/trivya/css/app.fe73f713.css"
   },
   {
-    "revision": "df94ec7a241e69300af14e8da01f56f1",
+    "revision": "60286d643fa529fb687d4cfe394b3920",
     "url": "/trivya/index.html"
   },
   {
-    "revision": "c10a8bffc4bcd573c141",
-    "url": "/trivya/js/app.1a642758.js"
+    "revision": "aa0d4fc7480524c7bc24",
+    "url": "/trivya/js/app.cf4d3736.js"
   },
   {
-    "revision": "93474fd92c619c8607a1",
-    "url": "/trivya/js/chunk-vendors.4755fd9b.js"
+    "revision": "f1553ca5b15389b7f41d",
+    "url": "/trivya/js/chunk-vendors.5b61c814.js"
   },
   {
     "revision": "3de88684a878807bd25a77bf2ea2b97a",
