@@ -5,6 +5,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/setup',
+    props: r => ({ ...r.query }),
     name: 'TriviaSetup',
     component: TriviaSetup,
   },

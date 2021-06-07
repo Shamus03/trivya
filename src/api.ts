@@ -20,6 +20,8 @@ export interface TriviaGame {
   roomCode?: string
   createdAt: firebase.firestore.Timestamp
   questions: TriviaQuestion[]
+  difficulty: string
+  categoryId: number
 }
 
 export interface TriviaQuestion {
