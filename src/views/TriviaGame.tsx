@@ -133,9 +133,7 @@ export default defineComponent({
     }
 
     const goToGameSetup = () => {
-      if(!game.value) return
-      const { categoryId, difficulty } = game.value
-      router.push({ name: 'TriviaSetup', query: { categoryId, difficulty } })
+      router.push({ name: 'TriviaSetup' })
     }
 
     const delayAfterChoosingAnswer = ref(true)
